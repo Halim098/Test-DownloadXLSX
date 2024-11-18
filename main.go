@@ -64,33 +64,35 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetSheetName("Sheet1", sheet)
 
 	// Tambahkan tanggal di B1
-	f.SetCellValue(sheet, "B1", "20-Dec-24")
+	f.SetCellValue(sheet, "B1", "20 Desember 24")
 
 	// Tambahkan header utama
-	f.MergeCell(sheet, "A2", "A3")
+	f.MergeCell(sheet, "A2", "A4")
 	f.SetCellValue(sheet, "A2", "No")
-	f.MergeCell(sheet, "B2", "B3")
+	f.MergeCell(sheet, "B2", "B4")
 	f.SetCellValue(sheet, "B2", "Komoditi")
-	f.MergeCell(sheet, "C2", "C3")
+	f.MergeCell(sheet, "C2", "C4")
 	f.SetCellValue(sheet, "C2", "Kemasan")
-	f.MergeCell(sheet, "D2", "D3")
+	f.MergeCell(sheet, "D2", "D4")
 	f.SetCellValue(sheet, "D2", "Harga Jual (RP)")
-	f.MergeCell(sheet, "E2", "F2")
-	f.SetCellValue(sheet, "E2", "Stok")
-	f.SetCellValue(sheet, "E3", "awal")
-	f.SetCellValue(sheet, "F3", "Tambahan")
-	f.MergeCell(sheet, "G2", "G3")
-	f.SetCellValue(sheet, "G2", "Terjual")
-	f.MergeCell(sheet, "H2", "H3")
-	f.SetCellValue(sheet, "H2", "Sisa")
-	f.MergeCell(sheet, "I2", "I3")
-	f.SetCellValue(sheet, "I2", "Penjualan")
-	f.MergeCell(sheet, "J2", "J3")
+	f.MergeCell(sheet, "E2", "G2")
+	f.SetCellValue(sheet, "E2", "Dikeluarkan dari BM")
+	f.MergeCell(sheet, "E2", "F3")
+	f.SetCellValue(sheet, "E3", "Stok")
+	f.SetCellValue(sheet, "E4", "Awal")
+	f.SetCellValue(sheet, "F4", "Tambahan")
+	f.MergeCell(sheet, "G3", "G4")
+	f.SetCellValue(sheet, "G3", "Terjual")
+	f.MergeCell(sheet, "H3", "H4")
+	f.SetCellValue(sheet, "H3", "Sisa")
+	f.MergeCell(sheet, "I2", "I4")
+	f.SetCellValue(sheet, "I2", "Hasil Penjualan (RP)")
+	f.MergeCell(sheet, "J2", "J4")
 	f.SetCellValue(sheet, "J2", "Stok Akhir")
 
 	// Tambahkan data produk
 	for i, product := range products {
-		row := i + 4
+		row := i + 5
 		f.SetCellValue(sheet, fmt.Sprintf("A%d", row), product.No)
 		f.SetCellValue(sheet, fmt.Sprintf("B%d", row), product.Komoditi)
 		f.SetCellValue(sheet, fmt.Sprintf("C%d", row), product.Kemasan)
@@ -104,16 +106,21 @@ func generateExcel(products []Product) ([]byte, error) {
 	}
 
 	// Tambahkan header untuk "Stok Keluar"
-	f.MergeCell(sheet, "A31", "B31")
+	f.SetCellValue(sheet, "B30", "Stok Keluar")
 	f.SetCellValue(sheet, "A31", "Nama")
-	f.SetCellValue(sheet, "C31", "Komoditi")
-	f.SetCellValue(sheet, "D31", "Jumlah")
+	f.SetCellValue(sheet, "B31", "Komoditi")
+	f.SetCellValue(sheet, "C31", "Jumlah")
 
 	// Tambahkan footer
-	f.SetCellValue(sheet, "H34", "Total")
-	f.SetCellValue(sheet, "H35", "Pengeluaran")
-	f.SetCellValue(sheet, "H36", "Uang Fisik")
-	f.SetCellValue(sheet, "H37", "Selisih")
+	f.SetCellValue(sheet, "H30", "Total			:")
+	f.SetCellValue(sheet, "H31", "Pengeluaran	:")
+	f.SetCellValue(sheet, "H32", "Uang Fisik	:")
+	f.SetCellValue(sheet, "H33", "Selisih		:")
+
+	f.MergeCell(sheet, "I30", "J30")
+	f.MergeCell(sheet, "I31", "J31")
+	f.MergeCell(sheet, "I32", "J32")
+	f.MergeCell(sheet, "I33", "J33")
 
     // Buat border style
     style := excelize.Style{
@@ -131,9 +138,9 @@ func generateExcel(products []Product) ([]byte, error) {
         return nil, err
     }
 
-    f.SetCellStyle(sheet, "A2", "J3", styleID)
-    f.SetCellStyle(sheet, "A31", "D31", styleID)
-    f.SetCellStyle(sheet, "H34", "I37", styleID)
+    f.SetCellStyle(sheet, "A2", "29", styleID)
+	f.SetCellStyle(sheet, "A31", "C34", styleID)
+	f.SetCellStyle(sheet, "H30", "J33", styleID)
 
     // Simpan file ke buffer
     var buf bytes.Buffer
