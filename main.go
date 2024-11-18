@@ -126,65 +126,61 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.MergeCell(sheet, "I32", "J32")
 	f.MergeCell(sheet, "I33", "J33")
 
-    // Buat border style
-    style := excelize.Style{
+    // Apply the style to cells
+    styleID, _ := f.NewStyle(&excelize.Style{
         Border: []excelize.Border{
             {Type: "left", Color: "000000", Style: 1},
             {Type: "top", Color: "000000", Style: 1},
             {Type: "bottom", Color: "000000", Style: 1},
             {Type: "right", Color: "000000", Style: 1},
         },
-    }
-
-    // Apply the style to cells
-    styleID, err := f.NewStyle(&style)
-    if err != nil {
-        return nil, err
-    }
-
-	// Set Rata kiri dan tengah
-	// Set Rata kiri dan tengah
-	styleCenter, _ := f.NewStyle(&excelize.Style{
 		Alignment: &excelize.Alignment{
 			Horizontal: "center",
 			Vertical:   "center",
 		},
-	})
+		Font: &excelize.Font{
+			Bold: true,
+		},
+    })
 
-	styleLeft, _ := f.NewStyle(&excelize.Style{
+	styleFont , _ := f.NewStyle(&excelize.Style{
+		Font: &excelize.Font{
+			Bold: true,
+		},
 		Alignment: &excelize.Alignment{
 			Horizontal: "left",
 			Vertical:   "center",
 		},
 	})
 
-	f.SetCellStyle(sheet, "A2", "J4", styleCenter)
-	f.SetCellStyle(sheet, "D1", "G1", styleCenter)
-	f.SetCellStyle(sheet, "A2", "A34", styleCenter)
-
-	f.SetCellStyle(sheet, "B5", "J29", styleLeft)
-	f.SetCellStyle(sheet, "H30", "J33", styleLeft)
-
-	// set bold font
-	styleBold, _ := f.NewStyle(&excelize.Style{
-		Font: &excelize.Font{
-			Bold: true,
+	styleCenter , _ := f.NewStyle(&excelize.Style{
+		Alignment: &excelize.Alignment{
+			Horizontal: "center",
+			Vertical:   "center",
 		},
 	})
 
-	f.SetCellStyle(sheet, "A1", "J4", styleBold)
-	f.SetCellStyle(sheet, "A30", "C31", styleBold)
-	f.SetCellStyle(sheet, "H30", "J33", styleBold)
-
+	styleLeft , _ := f.NewStyle(&excelize.Style{
+		Alignment: &excelize.Alignment{
+			Horizontal: "left",
+			Vertical:   "center",
+		},
+	})
 
 	columns := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
 	for _, col := range columns {
 		f.SetColWidth(sheet, col, col, 20)
 	}
 
-	f.SetCellStyle(sheet, "A2", "J29", styleID)
-	f.SetCellStyle(sheet, "A31", "C34", styleID)
-	f.SetCellStyle(sheet, "H30", "J33", styleID)
+	f.SetCellStyle(sheet, "A2", "J4", styleID)
+	f.SetCellStyle(sheet, "D1", "G1", styleID)
+	f.SetCellStyle(sheet, "A30", "C31", styleID)
+	
+	f.SetCellStyle(sheet, "H30", "J33", styleFont)
+
+	f.SetCellStyle(sheet, "A5", "J29", styleCenter)
+
+	f.SetCellStyle(sheet, "B5", "J29", styleLeft)
 
     // Simpan file ke buffer
     var buf bytes.Buffer
