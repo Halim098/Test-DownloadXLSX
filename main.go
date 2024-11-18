@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"bytes"
@@ -10,69 +10,121 @@ import (
 )
 
 type Product struct {
-	ID    int
-	Name  string
-	Price float64
+	No           int
+	Komoditi     string
+	Kemasan      string
+	HargaJual    float64
+	StokAwal     int
+	StokTambahan int
+	Terjual      int
+	Sisa         int
+	Penjualan    float64
+	StokAkhir    int
+}
+
+// Data Dummy
+func getDummyData() []Product {
+	return []Product{
+		{No: 1, Komoditi: "Beras", Kemasan: "1 kg", HargaJual: 12000, StokAwal: 50, StokTambahan: 20, Terjual: 60, Sisa: 10, Penjualan: 720000, StokAkhir: 10},
+		{No: 2, Komoditi: "Gula", Kemasan: "1 kg", HargaJual: 15000, StokAwal: 30, StokTambahan: 10, Terjual: 35, Sisa: 5, Penjualan: 525000, StokAkhir: 5},
+		{No: 3, Komoditi: "Minyak", Kemasan: "1 liter", HargaJual: 14000, StokAwal: 40, StokTambahan: 15, Terjual: 45, Sisa: 10, Penjualan: 630000, StokAkhir: 10},
+	}
 }
 
 // Fungsi utama untuk Vercel
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// Gunakan Gin untuk menangani routing
+	// Gunakan Gin untuk routing
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
 
-	// Data dummy
-	products := []Product{
-		{ID: 1, Name: "Product A", Price: 100.0},
-		{ID: 2, Name: "Product B", Price: 200.0},
-		{ID: 3, Name: "Product C", Price: 300.0},
-	}
-
-	// Tambahkan endpoint
+	// Endpoint untuk mendownload file
 	router.GET("/download", func(c *gin.Context) {
-		fileBytes, err := generateExcel(products)
+		data := getDummyData()
+		fileBytes, err := generateExcel(data)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to generate Excel"})
 			return
 		}
 
-		// Set header untuk mendownload file
-		c.Header("Content-Description", "File Transfer")
-		c.Header("Content-Disposition", "attachment; filename=products.xlsx")
+		// Kirim file sebagai response
+		c.Header("Content-Disposition", "attachment; filename=DataPenjualan.xlsx")
 		c.Data(http.StatusOK, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileBytes)
 	})
 
-	// Proses request HTTP menggunakan Gin
+	// Handle request HTTP melalui Gin
 	router.ServeHTTP(w, r)
 }
 
+// Fungsi untuk membuat file Excel
 func generateExcel(products []Product) ([]byte, error) {
-	// Buat file Excel baru
 	f := excelize.NewFile()
-	sheet := "Products"
+	sheet := "Data Penjualan Toko"
 
-	// Tambah Sheet baru
-	index,err := f.NewSheet(sheet)
-	if err != nil {
-		return nil, err
+	// Tambahkan sheet baru
+	f.SetSheetName("Sheet1", sheet)
+
+	// Tambahkan tanggal di B1
+	f.SetCellValue(sheet, "B1", "20-Dec-24")
+
+	// Merge header kolom
+	headerRanges := map[string]string{
+		"B2:B3": "Komoditi",
+		"C2:C3": "Kemasan",
+		"D2:D3": "Harga Jual (RP)",
+		"E2:E3": "Stok awal",
+		"F2:F3": "Stok Tambahan",
+		"G2:G3": "Terjual",
+		"H2:H3": "Sisa",
+		"I2:I3": "Penjualan",
+		"J2:J3": "Stok Akhir",
 	}
-	f.SetActiveSheet(index)
-
-	// Tambahkan Header
-	headers := []string{"ID", "Name", "Price"}
-	for i, header := range headers {
-		cell := fmt.Sprintf("%s1", string('A'+i))
-		f.SetCellValue(sheet, cell, header)
+	for cells, title := range headerRanges {
+		f.MergeCell(sheet, cells[:2], cells[3:])
+		f.SetCellValue(sheet, cells[:2], title)
 	}
+	f.SetCellValue(sheet, "A2", "No")
 
-	// Tambahkan Data
+	// Tambahkan data
 	for i, product := range products {
-		f.SetCellValue(sheet, fmt.Sprintf("A%d", i+2), product.ID)
-		f.SetCellValue(sheet, fmt.Sprintf("B%d", i+2), product.Name)
-		f.SetCellValue(sheet, fmt.Sprintf("C%d", i+2), product.Price)
+		row := i + 4
+		f.SetCellValue(sheet, fmt.Sprintf("A%d", row), product.No)
+		f.SetCellValue(sheet, fmt.Sprintf("B%d", row), product.Komoditi)
+		f.SetCellValue(sheet, fmt.Sprintf("C%d", row), product.Kemasan)
+		f.SetCellValue(sheet, fmt.Sprintf("D%d", row), product.HargaJual)
+		f.SetCellValue(sheet, fmt.Sprintf("E%d", row), product.StokAwal)
+		f.SetCellValue(sheet, fmt.Sprintf("F%d", row), product.StokTambahan)
+		f.SetCellValue(sheet, fmt.Sprintf("G%d", row), product.Terjual)
+		f.SetCellValue(sheet, fmt.Sprintf("H%d", row), product.Sisa)
+		f.SetCellValue(sheet, fmt.Sprintf("I%d", row), product.Penjualan)
+		f.SetCellValue(sheet, fmt.Sprintf("J%d", row), product.StokAkhir)
 	}
 
-	// Simpan file ke dalam buffer memory
+	// Tambahkan tabel "Stok Keluar"
+	f.MergeCell(sheet, "A31", "B31")
+	f.SetCellValue(sheet, "A31", "Nama")
+	f.SetCellValue(sheet, "C31", "Komoditi")
+	f.SetCellValue(sheet, "D31", "Jumlah")
+
+	// Tambahkan footer
+	f.SetCellValue(sheet, "H34", "Total")
+	f.SetCellValue(sheet, "H35", "Pengeluaran")
+	f.SetCellValue(sheet, "H36", "Uang Fisik")
+	f.SetCellValue(sheet, "H37", "Selisih")
+
+	// Buat border
+	style, _ := f.NewStyle(`{
+		"border": [
+			{"type": "left", "color": "000000", "style": 1},
+			{"type": "top", "color": "000000", "style": 1},
+			{"type": "bottom", "color": "000000", "style": 1},
+			{"type": "right", "color": "000000", "style": 1}
+		]
+	}`)
+	f.SetCellStyle(sheet, "A2", "J3", style)
+	f.SetCellStyle(sheet, "A31", "D31", style)
+	f.SetCellStyle(sheet, "H34", "I37", style)
+
+	// Simpan file ke buffer
 	var buf bytes.Buffer
 	if err := f.Write(&buf); err != nil {
 		return nil, err
