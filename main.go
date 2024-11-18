@@ -151,6 +151,12 @@ func generateExcel(products []Product) ([]byte, error) {
 			Horizontal: "left",
 			Vertical:   "center",
 		},
+		Border: []excelize.Border{
+            {Type: "left", Color: "000000", Style: 1},
+            {Type: "top", Color: "000000", Style: 1},
+            {Type: "bottom", Color: "000000", Style: 1},
+            {Type: "right", Color: "000000", Style: 1},
+        },
 	})
 
 	styleCenter , _ := f.NewStyle(&excelize.Style{
@@ -158,11 +164,39 @@ func generateExcel(products []Product) ([]byte, error) {
 			Horizontal: "center",
 			Vertical:   "center",
 		},
+		Border: []excelize.Border{
+            {Type: "left", Color: "000000", Style: 1},
+            {Type: "top", Color: "000000", Style: 1},
+            {Type: "bottom", Color: "000000", Style: 1},
+            {Type: "right", Color: "000000", Style: 1},
+        },
 	})
 
 	styleLeft , _ := f.NewStyle(&excelize.Style{
 		Alignment: &excelize.Alignment{
 			Horizontal: "left",
+			Vertical:   "center",
+		},
+		Border: []excelize.Border{
+            {Type: "left", Color: "000000", Style: 1},
+            {Type: "top", Color: "000000", Style: 1},
+            {Type: "bottom", Color: "000000", Style: 1},
+            {Type: "right", Color: "000000", Style: 1},
+        },
+	})
+
+	styleFontBold, _ := f.NewStyle(&excelize.Style{
+		Font: &excelize.Font{
+			Bold: true,
+		},
+	})
+
+	styleBoldCenter, _ := f.NewStyle(&excelize.Style{
+		Font: &excelize.Font{
+			Bold: true,
+		},
+		Alignment: &excelize.Alignment{
+			Horizontal: "center",
 			Vertical:   "center",
 		},
 	})
@@ -173,7 +207,7 @@ func generateExcel(products []Product) ([]byte, error) {
 	}
 
 	f.SetCellStyle(sheet, "A2", "J4", styleID)
-	f.SetCellStyle(sheet, "D1", "G1", styleID)
+	f.SetCellStyle(sheet, "D1", "G1", styleBoldCenter)
 	f.SetCellStyle(sheet, "A30", "C31", styleID)
 	
 	f.SetCellStyle(sheet, "H30", "J33", styleFont)
@@ -181,6 +215,8 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetCellStyle(sheet, "A5", "J29", styleCenter)
 
 	f.SetCellStyle(sheet, "B5", "J29", styleLeft)
+
+	f.SetCellStyle(sheet, "A1", "B1", styleFontBold)
 
     // Simpan file ke buffer
     var buf bytes.Buffer
