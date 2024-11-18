@@ -110,10 +110,10 @@ func generateExcel(products []Product) ([]byte, error) {
 	}
 
 	// Tambahkan header untuk "Stok Keluar"
-	f.SetCellValue(sheet, "B30", "Stok Keluar")
-	f.SetCellValue(sheet, "A31", "Nama")
-	f.SetCellValue(sheet, "B31", "Komoditi")
-	f.SetCellValue(sheet, "C31", "Jumlah")
+	f.SetCellValue(sheet, "C30", "Stok Keluar")
+	f.SetCellValue(sheet, "B31", "Nama")
+	f.SetCellValue(sheet, "C31", "Komoditi")
+	f.SetCellValue(sheet, "D31", "Jumlah")
 
 	// Tambahkan footer
 	f.SetCellValue(sheet, "H30", "Total			:")
@@ -201,7 +201,7 @@ func generateExcel(products []Product) ([]byte, error) {
 		},
 	})
 
-	columns := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
+	columns := []string{"B", "C"}
 	for _, col := range columns {
 		f.SetColWidth(sheet, col, col, 20)
 	}
@@ -215,10 +215,10 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetCellStyle(sheet, "A5", "J29", styleCenter)
 
 	f.SetCellStyle(sheet, "B5", "J29", styleLeft)
-	f.SetCellStyle(sheet, "A32", "C34", styleLeft)
+	f.SetCellStyle(sheet, "B32", "D34", styleLeft)
 
 	f.SetCellStyle(sheet, "A1", "B1", styleFontBold)
-	f.SetCellStyle(sheet, "A30", "C30", styleBoldCenter)
+	f.SetCellStyle(sheet, "A30", "D30", styleBoldCenter)
 
     // Simpan file ke buffer
     var buf bytes.Buffer
