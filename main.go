@@ -57,84 +57,83 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 // Fungsi untuk membuat file Excel
 func generateExcel(products []Product) ([]byte, error) {
-    f := excelize.NewFile()
-    sheet := "Data Penjualan Toko"
+	f := excelize.NewFile()
+	sheet := "Data Penjualan Toko"
 
-    // Tambahkan sheet baru
-    f.SetSheetName("Sheet1", sheet)
+	// Ganti nama sheet
+	f.SetSheetName("Sheet1", sheet)
 
-    // Tambahkan tanggal di B1
-    f.SetCellValue(sheet, "B1", "20-Dec-24")
+	// Tambahkan tanggal di B1
+	f.SetCellValue(sheet, "B1", "20-Dec-24")
 
-    // Merge header kolom
-    headerRanges := map[string]string{
-        "B2:B3": "Komoditi",
-        "C2:C3": "Kemasan",
-        "D2:D3": "Harga Jual (RP)",
-        "E2:E3": "Stok awal",
-        "F2:F3": "Stok Tambahan",
-        "G2:G3": "Terjual",
-        "H2:H3": "Sisa",
-        "I2:I3": "Penjualan",
-        "J2:J3": "Stok Akhir",
-    }
-    for cells, title := range headerRanges {
-        f.MergeCell(sheet, cells[:2], cells[3:])
-        f.SetCellValue(sheet, cells[:2], title)
-    }
-    f.SetCellValue(sheet, "A2", "No")
+	// Tambahkan header utama
+	f.MergeCell(sheet, "A2", "A3")
+	f.SetCellValue(sheet, "A2", "No")
+	f.MergeCell(sheet, "B2", "B3")
+	f.SetCellValue(sheet, "B2", "Komoditi")
+	f.MergeCell(sheet, "C2", "C3")
+	f.SetCellValue(sheet, "C2", "Kemasan")
+	f.MergeCell(sheet, "D2", "D3")
+	f.SetCellValue(sheet, "D2", "Harga Jual (RP)")
+	f.MergeCell(sheet, "E2", "F2")
+	f.SetCellValue(sheet, "E2", "Stok")
+	f.SetCellValue(sheet, "E3", "awal")
+	f.SetCellValue(sheet, "F3", "Tambahan")
+	f.MergeCell(sheet, "G2", "G3")
+	f.SetCellValue(sheet, "G2", "Terjual")
+	f.MergeCell(sheet, "H2", "H3")
+	f.SetCellValue(sheet, "H2", "Sisa")
+	f.MergeCell(sheet, "I2", "I3")
+	f.SetCellValue(sheet, "I2", "Penjualan")
+	f.MergeCell(sheet, "J2", "J3")
+	f.SetCellValue(sheet, "J2", "Stok Akhir")
 
-    // Tambahkan data
-    for i, product := range products {
-        row := i + 4
-        f.SetCellValue(sheet, fmt.Sprintf("A%d", row), product.No)
-        f.SetCellValue(sheet, fmt.Sprintf("B%d", row), product.Komoditi)
-        f.SetCellValue(sheet, fmt.Sprintf("C%d", row), product.Kemasan)
-        f.SetCellValue(sheet, fmt.Sprintf("D%d", row), product.HargaJual)
-        f.SetCellValue(sheet, fmt.Sprintf("E%d", row), product.StokAwal)
-        f.SetCellValue(sheet, fmt.Sprintf("F%d", row), product.StokTambahan)
-        f.SetCellValue(sheet, fmt.Sprintf("G%d", row), product.Terjual)
-        f.SetCellValue(sheet, fmt.Sprintf("H%d", row), product.Sisa)
-        f.SetCellValue(sheet, fmt.Sprintf("I%d", row), product.Penjualan)
-        f.SetCellValue(sheet, fmt.Sprintf("J%d", row), product.StokAkhir)
-    }
+	// Tambahkan data produk
+	for i, product := range products {
+		row := i + 4
+		f.SetCellValue(sheet, fmt.Sprintf("A%d", row), product.No)
+		f.SetCellValue(sheet, fmt.Sprintf("B%d", row), product.Komoditi)
+		f.SetCellValue(sheet, fmt.Sprintf("C%d", row), product.Kemasan)
+		f.SetCellValue(sheet, fmt.Sprintf("D%d", row), product.HargaJual)
+		f.SetCellValue(sheet, fmt.Sprintf("E%d", row), product.StokAwal)
+		f.SetCellValue(sheet, fmt.Sprintf("F%d", row), product.StokTambahan)
+		f.SetCellValue(sheet, fmt.Sprintf("G%d", row), product.Terjual)
+		f.SetCellValue(sheet, fmt.Sprintf("H%d", row), product.Sisa)
+		f.SetCellValue(sheet, fmt.Sprintf("I%d", row), product.Penjualan)
+		f.SetCellValue(sheet, fmt.Sprintf("J%d", row), product.StokAkhir)
+	}
 
-    // Tambahkan tabel "Stok Keluar"
-    f.MergeCell(sheet, "A31", "B31")
-    f.SetCellValue(sheet, "A31", "Nama")
-    f.SetCellValue(sheet, "C31", "Komoditi")
-    f.SetCellValue(sheet, "D31", "Jumlah")
+	// Tambahkan header untuk "Stok Keluar"
+	f.MergeCell(sheet, "A31", "B31")
+	f.SetCellValue(sheet, "A31", "Nama")
+	f.SetCellValue(sheet, "C31", "Komoditi")
+	f.SetCellValue(sheet, "D31", "Jumlah")
 
-    // Tambahkan footer
-    f.SetCellValue(sheet, "H34", "Total")
-    f.SetCellValue(sheet, "H35", "Pengeluaran")
-    f.SetCellValue(sheet, "H36", "Uang Fisik")
-    f.SetCellValue(sheet, "H37", "Selisih")
+	// Tambahkan footer
+	f.SetCellValue(sheet, "H34", "Total")
+	f.SetCellValue(sheet, "H35", "Pengeluaran")
+	f.SetCellValue(sheet, "H36", "Uang Fisik")
+	f.SetCellValue(sheet, "H37", "Selisih")
 
-    // Buat border style
-    style := excelize.Style{
-        Border: []excelize.Border{
-            {Type: "left", Color: "000000", Style: 1},
-            {Type: "top", Color: "000000", Style: 1},
-            {Type: "bottom", Color: "000000", Style: 1},
-            {Type: "right", Color: "000000", Style: 1},
-        },
-    }
+	// Tambahkan border untuk cell
+	style, _ := f.NewStyle(&excelize.Style{
+		Border: []excelize.Border{
+			{Type: "left", Color: "000000", Style: 1},
+			{Type: "top", Color: "000000", Style: 1},
+			{Type: "bottom", Color: "000000", Style: 1},
+			{Type: "right", Color: "000000", Style: 1},
+		},
+	})
 
-    // Apply the style to cells
-    styleID, err := f.NewStyle(&style)
-    if err != nil {
-        return nil, err
-    }
+	f.SetCellStyle(sheet, "A2", "J3", style)
+	f.SetCellStyle(sheet, "A31", "D31", style)
+	f.SetCellStyle(sheet, "H34", "I37", style)
 
-    f.SetCellStyle(sheet, "A2", "J3", styleID)
-    f.SetCellStyle(sheet, "A31", "D31", styleID)
-    f.SetCellStyle(sheet, "H34", "I37", styleID)
-
-    // Simpan file ke buffer
-    var buf bytes.Buffer
-    if err := f.Write(&buf); err != nil {
-        return nil, err
-    }
-    return buf.Bytes(), nil
+	// Simpan file ke buffer
+	var buf bytes.Buffer
+	if err := f.Write(&buf); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
 }
+
