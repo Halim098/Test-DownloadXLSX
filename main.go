@@ -208,15 +208,17 @@ func generateExcel(products []Product) ([]byte, error) {
 
 	f.SetCellStyle(sheet, "A2", "J4", styleID)
 	f.SetCellStyle(sheet, "D1", "G1", styleBoldCenter)
-	f.SetCellStyle(sheet, "A30", "C31", styleID)
+	f.SetCellStyle(sheet, "A31", "C31", styleID)
 	
 	f.SetCellStyle(sheet, "H30", "J33", styleFont)
 
 	f.SetCellStyle(sheet, "A5", "J29", styleCenter)
 
 	f.SetCellStyle(sheet, "B5", "J29", styleLeft)
+	f.SetCellStyle(sheet, "A32", "C34", styleLeft)
 
 	f.SetCellStyle(sheet, "A1", "B1", styleFontBold)
+	f.SetCellStyle(sheet, "A30", "C30", styleFontBold)
 
     // Simpan file ke buffer
     var buf bytes.Buffer
