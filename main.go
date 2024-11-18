@@ -204,8 +204,8 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetColWidth(sheet, "F", "F", 10.22)
 	f.SetColWidth(sheet, "G", "G", 6.89)
 	f.SetColWidth(sheet, "H", "H", 5.78)
-	f.SetColWidth(sheet, "I", "I", 16.56)
-	f.SetColWidth(sheet, "J", "J", 11.67)
+	f.SetColWidth(sheet, "I", "I", 16.78)
+	f.SetColWidth(sheet, "J", "J", 13.37)
 
 	f.SetCellStyle(sheet, "A2", "J4", styleID)
 	f.SetCellStyle(sheet, "D1", "G1", styleBoldCenter)
