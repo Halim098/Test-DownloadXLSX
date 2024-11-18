@@ -149,3 +149,4 @@ func generateExcel(products []Product) ([]byte, error) {
     }
     return buf.Bytes(), nil
 }
+
