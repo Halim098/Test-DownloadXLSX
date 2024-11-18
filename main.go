@@ -138,7 +138,7 @@ func generateExcel(products []Product) ([]byte, error) {
         return nil, err
     }
 
-    f.SetCellStyle(sheet, "A2", "29", styleID)
+    f.SetCellStyle(sheet, "A2", "J29", styleID)
 	f.SetCellStyle(sheet, "A31", "C34", styleID)
 	f.SetCellStyle(sheet, "H30", "J33", styleID)
 
