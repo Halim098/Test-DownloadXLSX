@@ -142,10 +142,6 @@ func generateExcel(products []Product) ([]byte, error) {
         return nil, err
     }
 
-    f.SetCellStyle(sheet, "A2", "J29", styleID)
-	f.SetCellStyle(sheet, "A31", "C34", styleID)
-	f.SetCellStyle(sheet, "H30", "J33", styleID)
-
 	// Set Rata kiri dan tengah
 	// Set Rata kiri dan tengah
 	styleCenter, _ := f.NewStyle(&excelize.Style{
@@ -185,6 +181,10 @@ func generateExcel(products []Product) ([]byte, error) {
 	for _, col := range columns {
 		f.SetColWidth(sheet, col, col, 20)
 	}
+
+	f.SetCellStyle(sheet, "A2", "J29", styleID)
+	f.SetCellStyle(sheet, "A31", "C34", styleID)
+	f.SetCellStyle(sheet, "H30", "J33", styleID)
 
     // Simpan file ke buffer
     var buf bytes.Buffer
