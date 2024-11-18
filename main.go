@@ -64,7 +64,11 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetSheetName("Sheet1", sheet)
 
 	// Tambahkan tanggal di B1
-	f.SetCellValue(sheet, "B1", "20 Desember 24")
+	f.MergeCell(sheet, "A1", "B1")
+	f.SetCellValue(sheet, "A1", "20 Desember 24")
+
+	f.MergeCell(sheet, "D1", "G1")
+	f.SetCellValue(sheet, "D1", "Data Penjualan Toko")
 
 	// Tambahkan header utama
 	f.MergeCell(sheet, "A2", "A4")
@@ -73,8 +77,7 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetCellValue(sheet, "B2", "Komoditi")
 	f.MergeCell(sheet, "C2", "C4")
 	f.SetCellValue(sheet, "C2", "Kemasan")
-	f.SetCellValue(sheet, "D2", "Harga")
-	f.MergeCell(sheet, "D3", "D4")
+	f.MergeCell(sheet, "D2", "D4")
 	f.SetCellValue(sheet, "D2", "Harga Jual (RP)")
 	f.MergeCell(sheet, "E2", "G2")
 	f.SetCellValue(sheet, "E2", "Dikeluarkan dari BM")
@@ -86,9 +89,8 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetCellValue(sheet, "G3", "Terjual")
 	f.MergeCell(sheet, "H3", "H4")
 	f.SetCellValue(sheet, "H3", "Sisa")
-	f.MergeCell(sheet, "I3", "I4")
-	f.SetCellValue(sheet, "I2", "Hasil")
-	f.SetCellValue(sheet, "I3", "Penjualan (RP)")
+	f.MergeCell(sheet, "I2", "I4")
+	f.SetCellValue(sheet, "I2", "Hasil Penjualan (RP)")
 	f.MergeCell(sheet, "J2", "J4")
 	f.SetCellValue(sheet, "J2", "Stok Akhir")
 
@@ -143,6 +145,46 @@ func generateExcel(products []Product) ([]byte, error) {
     f.SetCellStyle(sheet, "A2", "J29", styleID)
 	f.SetCellStyle(sheet, "A31", "C34", styleID)
 	f.SetCellStyle(sheet, "H30", "J33", styleID)
+
+	// Set Rata kiri dan tengah
+	// Set Rata kiri dan tengah
+	styleCenter, _ := f.NewStyle(&excelize.Style{
+		Alignment: &excelize.Alignment{
+			Horizontal: "center",
+			Vertical:   "center",
+		},
+	})
+
+	styleLeft, _ := f.NewStyle(&excelize.Style{
+		Alignment: &excelize.Alignment{
+			Horizontal: "left",
+			Vertical:   "center",
+		},
+	})
+
+	f.SetCellStyle(sheet, "A2", "J4", styleCenter)
+	f.SetCellStyle(sheet, "D1", "G1", styleCenter)
+	f.SetCellStyle(sheet, "A2", "A34", styleCenter)
+
+	f.SetCellStyle(sheet, "B5", "J29", styleLeft)
+	f.SetCellStyle(sheet, "H30", "J33", styleLeft)
+
+	// set bold font
+	styleBold, _ := f.NewStyle(&excelize.Style{
+		Font: &excelize.Font{
+			Bold: true,
+		},
+	})
+
+	f.SetCellStyle(sheet, "A1", "J4", styleBold)
+	f.SetCellStyle(sheet, "A30", "C31", styleBold)
+	f.SetCellStyle(sheet, "H30", "J33", styleBold)
+
+
+	columns := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"}
+	for _, col := range columns {
+		f.SetColWidth(sheet, col, col, 20)
+	}
 
     // Simpan file ke buffer
     var buf bytes.Buffer
