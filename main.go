@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"bytes"
@@ -52,7 +52,10 @@ func generateExcel(products []Product) ([]byte, error) {
 	sheet := "Products"
 
 	// Tambah Sheet baru
-	index := f.NewSheet(sheet)
+	index,err := f.NewSheet(sheet)
+	if err != nil {
+		return nil, err
+	}
 	f.SetActiveSheet(index)
 
 	// Tambahkan Header
