@@ -115,25 +115,30 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetCellValue(sheet, "H36", "Uang Fisik")
 	f.SetCellValue(sheet, "H37", "Selisih")
 
-	// Tambahkan border untuk cell
-	style, _ := f.NewStyle(&excelize.Style{
-		Border: []excelize.Border{
-			{Type: "left", Color: "000000", Style: 1},
-			{Type: "top", Color: "000000", Style: 1},
-			{Type: "bottom", Color: "000000", Style: 1},
-			{Type: "right", Color: "000000", Style: 1},
-		},
-	})
+    // Buat border style
+    style := excelize.Style{
+        Border: []excelize.Border{
+            {Type: "left", Color: "000000", Style: 1},
+            {Type: "top", Color: "000000", Style: 1},
+            {Type: "bottom", Color: "000000", Style: 1},
+            {Type: "right", Color: "000000", Style: 1},
+        },
+    }
 
-	f.SetCellStyle(sheet, "A2", "J3", style)
-	f.SetCellStyle(sheet, "A31", "D31", style)
-	f.SetCellStyle(sheet, "H34", "I37", style)
+    // Apply the style to cells
+    styleID, err := f.NewStyle(&style)
+    if err != nil {
+        return nil, err
+    }
 
-	// Simpan file ke buffer
-	var buf bytes.Buffer
-	if err := f.Write(&buf); err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
+    f.SetCellStyle(sheet, "A2", "J3", styleID)
+    f.SetCellStyle(sheet, "A31", "D31", styleID)
+    f.SetCellStyle(sheet, "H34", "I37", styleID)
+
+    // Simpan file ke buffer
+    var buf bytes.Buffer
+    if err := f.Write(&buf); err != nil {
+        return nil, err
+    }
+    return buf.Bytes(), nil
 }
-
