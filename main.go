@@ -116,15 +116,10 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetCellValue(sheet, "D31", "Jumlah")
 
 	// Tambahkan footer
-	f.SetCellValue(sheet, "H30", "Total			:")
-	f.SetCellValue(sheet, "H31", "Pengeluaran	:")
-	f.SetCellValue(sheet, "H32", "Uang Fisik	:")
-	f.SetCellValue(sheet, "H33", "Selisih		:")
-
-	f.MergeCell(sheet, "I30", "J30")
-	f.MergeCell(sheet, "I31", "J31")
-	f.MergeCell(sheet, "I32", "J32")
-	f.MergeCell(sheet, "I33", "J33")
+	f.SetCellValue(sheet, "I30", "Total			:")
+	f.SetCellValue(sheet, "I31", "Pengeluaran	:")
+	f.SetCellValue(sheet, "I32", "Uang Fisik	:")
+	f.SetCellValue(sheet, "I33", "Selisih		:")
 
     // Apply the style to cells
     styleID, _ := f.NewStyle(&excelize.Style{
@@ -201,16 +196,22 @@ func generateExcel(products []Product) ([]byte, error) {
 		},
 	})
 
-	columns := []string{"B", "C"}
-	for _, col := range columns {
-		f.SetColWidth(sheet, col, col, 20)
-	}
+	f.SetColWidth(sheet, "A", "A", 4.44)
+	f.SetColWidth(sheet, "B", "B", 19.11)
+	f.SetColWidth(sheet, "C", "C", 16.22)
+	f.SetColWidth(sheet, "D", "D", 15.56)
+	f.SetColWidth(sheet, "E", "E", 4.89)
+	f.SetColWidth(sheet, "F", "F", 10.22)
+	f.SetColWidth(sheet, "G", "G", 6.89)
+	f.SetColWidth(sheet, "H", "H", 5.78)
+	f.SetColWidth(sheet, "I", "I", 16.56)
+	f.SetColWidth(sheet, "J", "J", 11.67)
 
 	f.SetCellStyle(sheet, "A2", "J4", styleID)
 	f.SetCellStyle(sheet, "D1", "G1", styleBoldCenter)
-	f.SetCellStyle(sheet, "A31", "C31", styleID)
+	f.SetCellStyle(sheet, "B31", "D31", styleID)
 	
-	f.SetCellStyle(sheet, "H30", "J33", styleFont)
+	f.SetCellStyle(sheet, "I30", "J33", styleFont)
 
 	f.SetCellStyle(sheet, "A5", "J29", styleCenter)
 
