@@ -204,7 +204,7 @@ func generateExcel(products []Product) ([]byte, error) {
 	f.SetColWidth(sheet, "F", "F", 10.22)
 	f.SetColWidth(sheet, "G", "G", 6.89)
 	f.SetColWidth(sheet, "H", "H", 5.78)
-	f.SetColWidth(sheet, "I", "I", 16.78)
+	f.SetColWidth(sheet, "I", "I", 17.44)
 	f.SetColWidth(sheet, "J", "J", 13.37)
 
 	f.SetCellStyle(sheet, "A2", "J4", styleID)
@@ -220,7 +220,7 @@ func generateExcel(products []Product) ([]byte, error) {
 
 	f.SetCellStyle(sheet, "A1", "B1", styleFontBold)
 	f.SetCellStyle(sheet, "A30", "D30", styleBoldCenter)
-
+	
     // Simpan file ke buffer
     var buf bytes.Buffer
     if err := f.Write(&buf); err != nil {
