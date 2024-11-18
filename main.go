@@ -1,4 +1,4 @@
-package handler
+package main
 
 import (
 	"bytes"
@@ -15,19 +15,21 @@ type Product struct {
 	Price float64
 }
 
-func main() {
-	// Data dummy dalam struct
+// Fungsi utama untuk Vercel
+func Handler(w http.ResponseWriter, r *http.Request) {
+	// Gunakan Gin untuk menangani routing
+	gin.SetMode(gin.ReleaseMode)
+	router := gin.New()
+
+	// Data dummy
 	products := []Product{
 		{ID: 1, Name: "Product A", Price: 100.0},
 		{ID: 2, Name: "Product B", Price: 200.0},
 		{ID: 3, Name: "Product C", Price: 300.0},
 	}
 
-	// Inisialisasi Gin Router
-	r := gin.Default()
-
-	// Endpoint untuk Generate dan Download Excel
-	r.GET("/download", func(c *gin.Context) {
+	// Tambahkan endpoint
+	router.GET("/download", func(c *gin.Context) {
 		fileBytes, err := generateExcel(products)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to generate Excel"})
@@ -40,15 +42,8 @@ func main() {
 		c.Data(http.StatusOK, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileBytes)
 	})
 
-	// Jalankan aplikasi di serverless
-	// Untuk lingkungan seperti Vercel, gunakan handler tanpa `.Run()`.
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		r.URL.Path = "/download"
-		r.Method = "GET"
-		r.Header.Set("Content-Type", "application/json")
-		r.Body.Close()
-	})
-	r.Run(":8080") // Gunakan ini jika Anda ingin menjalankan lokal
+	// Proses request HTTP menggunakan Gin
+	router.ServeHTTP(w, r)
 }
 
 func generateExcel(products []Product) ([]byte, error) {
@@ -57,11 +52,7 @@ func generateExcel(products []Product) ([]byte, error) {
 	sheet := "Products"
 
 	// Tambah Sheet baru
-	index,err := f.NewSheet(sheet)
-	if err != nil {
-		return nil, err
-	}
-	
+	index := f.NewSheet(sheet)
 	f.SetActiveSheet(index)
 
 	// Tambahkan Header
